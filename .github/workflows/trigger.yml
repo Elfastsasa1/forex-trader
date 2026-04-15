@@ -1,0 +1,15 @@
+name: Trigger Hunter Signals
+on:
+  schedule:
+    - cron: '*/15 * * * 1-5'  # Setiap 15 menit, Senin-Jamat
+  workflow_dispatch:         # Bisa manual trigger dari GitHub UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API
+        run: |
+          curl -f -X GET "${{ secrets.VERCEL_URL }}/api/cron" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            --max-time 30 || echo "⚠️ Request failed (non-fatal)"
